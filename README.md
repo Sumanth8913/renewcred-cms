@@ -4,14 +4,52 @@ A production-oriented, headless CMS for the RenewCred website: an authenticated
 **Admin CMS** manages every piece of content as structured blocks, and a
 **Public Website** renders that content dynamically — nothing is hardcoded.
 
-```
+## Project Structure
+
+```text
 renewcred-cms/
 ├── docker-compose.yml
+├── README.md
 ├── .env.example
-├── BLOCKS.md            # content model reference
-├── backend/              # Express + Prisma + MySQL REST API
-├── admin/                # Next.js + Redux Toolkit admin dashboard
-└── public-web/           # Next.js public-facing site
+├── BLOCKS.md
+│
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── middlewares/
+│   │   ├── routes/
+│   │   ├── validators/
+│   │   ├── utils/
+│   │   ├── app.js
+│   │   └── server.js
+│   ├── prisma/
+│   │   ├── schema.prisma
+│   │   └── seed.js
+│   ├── uploads/
+│   ├── package.json
+│   ├── .env.example
+│   └── Dockerfile
+│
+├── admin/
+│   ├── src/
+│   │   ├── app/
+│   │   ├── components/
+│   │   ├── store/
+│   │   └── lib/
+│   ├── package.json
+│   ├── .env.example
+│   └── Dockerfile
+│
+└── public-web/
+    ├── src/
+    │   ├── app/
+    │   ├── components/
+    │   └── lib/
+    ├── package.json
+    ├── .env.example
+    └── Dockerfile
 ```
 
 ## 1. Architecture Overview
@@ -78,8 +116,8 @@ seed automatically on boot), admin CMS, and the public site.
 
 - Public website → http://localhost:3000
 - Admin CMS → http://localhost:3001
-- Backend API → http://localhost:4000/api/v1
-- Health check → http://localhost:4000/health
+- Backend API → http://localhost:5000/api/v1
+- Health check → http://localhost:5000/health
 
 Default admin login (seeded automatically):
 
@@ -88,9 +126,8 @@ Email:    admin@renewcred.local
 Password: Admin@123
 ```
 
-**Change these credentials immediately in any non-local environment** — either
-via a new migration/seed edit, or by adding an "update password" admin
-endpoint before deploying (see Future Improvements).
+**Note:** The default admin account is created by the seed script for demonstration purposes. 
+Change the credentials before deploying the application to production.
 
 ### Option B — Run each service locally (no Docker)
 
@@ -103,7 +140,7 @@ cp .env.example .env        # edit DATABASE_URL / JWT_SECRET as needed
 npm install
 npx prisma migrate dev --name init
 npm run seed
-npm run dev                  # http://localhost:4000
+npm run dev                  # http://localhost:5000
 
 # 2. Admin CMS (new terminal)
 cd admin
@@ -205,10 +242,16 @@ structure open. Decisions made, and why:
 
 Running `npm run seed` (or the automatic seed on `docker-compose up`) creates:
 
-- One default admin (see credentials above)
-- Four categories: EV, Biochar, Methane, Renewable Energy
-- One published Standard page per category, pre-filled with headings, rich
-  text, a list, a table, and a KaTeX equation block — enough to see every
-  block type rendering end-to-end immediately after setup
-- A Home page and one sample documentation page (Impartiality Policy)
-- Site-wide settings (name, contact details, socials)
+- One default admin account
+- Four default categories:
+  - EV
+  - Biochar
+  - Methane
+  - Renewable Energy
+- Demo pages, including:
+  - Home page
+  - One published Standard page for each category
+  - One sample documentation page (Impartiality Policy)
+- Sample content blocks for the demo pages, including headings, rich text, lists, tables, images, and other supported block types required to demonstrate the CMS functionality.
+
+The seeded data allows the application to be explored immediately after setup without requiring manual content creation.
