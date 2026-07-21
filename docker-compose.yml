@@ -1,0 +1,78 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: renewcred_cms
+      MYSQL_USER: renewcred
+      MYSQL_PASSWORD: renewcred_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_pass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - renewcred_net
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      NODE_ENV: production
+      DATABASE_URL: "mysql://renewcred:renewcred_pass@mysql:3306/renewcred_cms"
+      JWT_SECRET: "replace-this-with-a-long-random-string"
+      JWT_EXPIRES_IN: "7d"
+      CORS_ORIGIN: "http://localhost:3000,http://localhost:3001"
+      UPLOAD_PATH: "uploads"
+    ports:
+      - "4000:4000"
+    volumes:
+      - backend_uploads:/app/uploads
+    networks:
+      - renewcred_net
+
+  admin:
+    build:
+      context: ./admin
+      args:
+        NEXT_PUBLIC_API_URL: "http://localhost:4000/api/v1"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3001:3001"
+    networks:
+      - renewcred_net
+
+  public-web:
+    build:
+      context: ./public-web
+      args:
+        NEXT_PUBLIC_API_URL: "http://localhost:4000/api/v1"
+        NEXT_PUBLIC_SITE_URL: "http://localhost:3000"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    networks:
+      - renewcred_net
+
+volumes:
+  mysql_data:
+  backend_uploads:
+
+networks:
+  renewcred_net:
+    driver: bridge
