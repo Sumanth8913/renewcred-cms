@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-50 text-ink;
+}
+
+.card {
+  @apply bg-white rounded-xl border border-gray-200 shadow-sm;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-50;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50;
+}
+
+.input {
+  @apply w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand;
+}
+
+.label {
+  @apply mb-1 block text-sm font-medium text-gray-700;
+}
+
+.ProseMirror {
+  @apply min-h-[160px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none;
+}
+.ProseMirror table {
+  @apply w-full border-collapse;
+}
+.ProseMirror td, .ProseMirror th {
+  @apply border border-gray-300 px-2 py-1;
+}
