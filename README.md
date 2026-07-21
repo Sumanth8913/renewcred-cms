@@ -103,14 +103,14 @@ logic behind a REST API (`/api/v1`); neither frontend talks to MySQL directly.
 
 All dependencies are free and open-source; no paid APIs or services are required.
 
-## 3. Getting Started
+## Getting Started
 
-### Option A — Docker Compose (recommended, one command)
+### Option A — Docker Compose (Recommended)
 
 Requires Docker Desktop / Docker Engine only.
 
 ```bash
-git clone <your-repo-url> renewcred-cms
+git clone https://github.com/Sumanth8913/renewcred-cms.git
 cd renewcred-cms
 docker-compose up --build
 ```
