@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  pages        Page[]   @relation("PageAuthor")
+  auditLogs    AuditLog[]
+
+  @@map("admins")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  icon      String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  pages     Page[]
+
+  @@index([slug])
+  @@map("categories")
+}
+
+// A Page is one unit of manageable content — a full page (Home, About)
+// or a documentation-style entry (a Standard like "EV", "Biochar").
+// Content is stored as an ordered array of typed blocks (JSON), never raw HTML,
+// so the renderer stays declarative and new block types are additive.
+model Page {
+  id              String     @id @default(uuid())
+  title           String
+  slug            String     @unique
+  pageType        String     @default("standard") // "page" | "standard" | "doc"
+  excerpt         String?    @db.Text
+  blocks          Json       // Block[]  -> see BLOCKS.md for shape
+  status          PageStatus @default(DRAFT)
+  version         String?    // e.g. "v1.0.0", used for documentation pages
+  publicationDate DateTime?
+  consultationStart DateTime?
+  consultationEnd DateTime?
+
+  metaTitle       String?
+  metaDescription String? @db.Text
+  ogImage         String?
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  authorId String?
+  author   Admin?  @relation("PageAuthor", fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([status])
+  @@index([categoryId])
+  @@map("pages")
+}
+
+model Media {
+  id        String   @id @default(uuid())
+  fileName  String
+  url       String
+  mimeType  String
+  size      Int
+  width     Int?
+  height    Int?
+  createdAt DateTime @default(now())
+
+  @@map("media")
+}
+
+model FormSubmission {
+  id        String   @id @default(uuid())
+  formType  String   // "buyer" | "supplier" | "contact" | "newsletter"
+  payload   Json
+  createdAt DateTime @default(now())
+
+  @@index([formType])
+  @@map("form_submissions")
+}
+
+model Setting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value Json
+
+  @@map("settings")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  adminId   String?
+  admin     Admin?   @relation(fields: [adminId], references: [id])
+  action    String   // "LOGIN" | "CREATE_PAGE" | "UPDATE_PAGE" | ...
+  entity    String?
+  entityId  String?
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@map("audit_logs")
+}
