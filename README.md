@@ -4,12 +4,23 @@ A production-oriented, headless CMS for the RenewCred website: an authenticated
 **Admin CMS** manages every piece of content as structured blocks, and a
 **Public Website** renders that content dynamically — nothing is hardcoded.
 
-🎥 Project Demo
+## 🎥 Project Demo
 
 Watch the complete project demonstration on Google Drive:
 
-📹 Demo Video:
+📹 **Demo Video:**
 https://drive.google.com/file/d/1usuLllt5-gK2tMjoQY2rK_xVbN9eooiT/view?usp=sharing
+
+The demo showcases:
+
+* 🔐 User Authentication
+* 📊 Admin Dashboard
+* 📝 Content Management
+* 🌐 Public Website
+* ⚙️ Backend REST APIs
+* 🗄️ MySQL Database Integration
+* 🐳 Docker Support
+* 📱 Responsive User Interface
 
 ## Project Structure
 
