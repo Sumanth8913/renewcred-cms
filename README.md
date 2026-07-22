@@ -4,9 +4,12 @@ A production-oriented, headless CMS for the RenewCred website: an authenticated
 **Admin CMS** manages every piece of content as structured blocks, and a
 **Public Website** renders that content dynamically — nothing is hardcoded.
 
-Watch the complete project demonstration on YouTube:
+🎥 Project Demo
 
-▶️ https://youtu.be/7fddjK27B9M
+Watch the complete project demonstration on Google Drive:
+
+📹 Demo Video:
+https://drive.google.com/file/d/1usuLllt5-gK2tMjoQY2rK_xVbN9eooiT/view?usp=sharing
 
 ## Project Structure
 
